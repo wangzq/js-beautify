@@ -17,9 +17,9 @@
 # pylint: disable=F0401
 # pylint: disable=E0611
 try:
-    from urllib import unquote_plus
+    from urllib import unquote_plus, unquote
 except ImportError:
-    from urllib.parse import unquote_plus
+    from urllib.parse import unquote_plus, unquote
 
 PRIORITY = 0
 
@@ -32,3 +32,9 @@ def detect(code):
 def unpack(code):
     """URL decode `code` source string."""
     return unquote_plus(code) if detect(code) else code
+
+def unpack2(code):
+	"""some bookmarklet cannot be decoded using unquote_plus, example:
+	javascript:(function(){%20function%20htmlEscape(s){s=s.replace(/&/g,'&amp;');s=s.replace(/>/g,'&gt;');s=s.replace(/</g,'&lt;');return%20s;}%20x=window.open();%20x.document.write('<pre>'%20+%20htmlEscape('<html>\n'%20+%20document.documentElement.innerHTML%20+%20'\n</html>'));%20x.document.close();%20})();
+	"""
+	return unquote(code) if detect(code) else code
